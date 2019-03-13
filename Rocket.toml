@@ -1,0 +1,27 @@
+[global]
+address = "1.2.3.4"
+limits = { forms = 131072 }
+
+[development]
+address = "localhost"
+port = 8000
+workers = 12
+keep_alive = 5
+log = "normal"
+limits = { forms = 32768 }
+
+[staging]
+address = "0.0.0.0"
+port = 8000
+workers = 12
+keep_alive = 5
+log = "normal"
+limits = { forms = 32768 }
+
+[production]
+address = "0.0.0.0"
+port = 8000
+workers = 12
+keep_alive = 5
+log = "critical"
+limits = { forms = 32768 }
