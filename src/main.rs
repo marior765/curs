@@ -1,16 +1,19 @@
-#![feature(proc_macro_hygiene, decl_macro)]
+// #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use] 
 extern crate rocket;
-extern crate diesel;
+#[macro_use] extern crate diesel;
 extern crate dotenv;
 extern crate serde;
+
+use diesel::prelude::*;
 
 pub mod connect;
 pub mod models;
 pub mod queries;
 pub mod lib;
 pub mod routes;
+pub mod schema;
 
 // use connect::establish_connection;
 // use routes::hello_world;
@@ -26,9 +29,10 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![
             routes::hello_world, 
-            routes::hadler, 
+            // routes::hadler, 
             routes::logout, 
-            routes::new
+            routes::new,
+            routes::assets
         ])
         .launch();
     // println!("Hello, world!");

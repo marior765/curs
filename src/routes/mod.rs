@@ -1,6 +1,7 @@
 use rocket::http::RawStr;
-use rocket::response::Redirect;
-use rocket::response::status;
+use rocket::response::{Redirect, status, NamedFile};
+use std::path::{Path, PathBuf};
+use rocket::State;
 
 #[get("/")]
 pub fn hello_world() -> &'static str { 
@@ -25,4 +26,11 @@ pub fn hadler(name: &RawStr) -> String {
 #[post("/<id>")]
 pub fn new(id: usize) -> status::Accepted<String> {
     status::Accepted(Some(format!("id: '{}'", id)))
+}
+
+pub struct AssetsDir(String);
+
+#[get("/<asset..>")]
+pub fn assets(asset: PathBuf, assets_dir: State<AssetsDir>) -> Option<NamedFile> {
+    NamedFile::open(Path::new(&assets_dir.0).join(asset)).ok()
 }
