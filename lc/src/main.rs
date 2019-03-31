@@ -12,7 +12,6 @@ mod routes;
 use rocket::ignite;
 
 fn main() {
-    //let _conn = db::establish_connection();
     ignite().mount("/", routes![
         routes::start,
         routes::logout,
