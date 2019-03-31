@@ -1,18 +1,24 @@
-#[macro_use] extern crate diesel;
+#![feature(proc_macro_hygiene, decl_macro)]
+#![feature(plugin)]
+ 
+#[macro_use]
+extern crate rocket;
+extern crate diesel; 
+extern crate rocket_contrib;
+extern crate serde_derive;
 
-use db::*;
-use self::models::*;
-use self::schema::posts::dsl::*;
-use diesel::prelude::*;
+mod routes;
+
+use rocket::ignite;
 
 fn main() {
-    let num = 10;
-    let _conn = db::establish_connection();
-
-    let results = posts
-        .filter(published.eq(true))
-        .limit(5)
-        .load::<Post>(&_conn)
-        .expect("Error loading posts");
+    //let _conn = db::establish_connection();
+    ignite().mount("/", routes![
+        routes::start,
+        routes::logout,
+        routes::show_post,
+        routes::create_post,
+        routes::delete_post,
+    ]).launch();
 
 }

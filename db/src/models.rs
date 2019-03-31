@@ -1,8 +1,9 @@
 use super::schema::*;
-use diesel::prelude::*;
-use diesel::pg::PgConnection;
+use rocket::*;
+use serde::{Serialize, Deserialize};
 
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Serialize, Deserialize)]
+#[table_name="posts"]
 pub struct Post {
     pub id: i32,
     pub title: String,
@@ -10,11 +11,11 @@ pub struct Post {
     pub published: bool,
 }
 
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, FromForm)]
 #[table_name="posts"]
-pub struct NewPost<'a> {
-    pub title: &'a str,
-    pub body: &'a str,
+pub struct NewPost {
+    pub title: String,
+    pub body: String,
 }
 
 // impl Post {

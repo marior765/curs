@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate diesel;
 extern crate dotenv;
+extern crate rocket;
+extern crate serde_derive;
 
 pub mod schema;
 pub mod models;
@@ -9,38 +11,26 @@ use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
-use models::{Post, NewPost};
-// use schema::{posts};
-// use schema::posts::dsl::*;
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
 
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url)
+    PgConnection::establish("postgres://postgres:1651234789@localhost/postgres")
        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
-// pub fn show_posts(_n: u8, _conn: &PgConnection) -> Post {
-//     use schema::posts::dsl::*;
+// pub fn create_post<'a>(_conn: &PgConnection, title: &'a str, body: &'a str) -> Post {
+//         use schema::posts;
 
-//     posts.filter(published.eq(true))
-//         .limit(_n)
-//         .load::<Post>(_conn)
-//         .expect("Error loading post")
+//     let new_post = NewPost {
+//         title,
+//         body
+//     };
+
+//     diesel::insert_into(posts::table)
+//         .values(new_post)
+//         .get_result(_conn)
+//         .expect("Error saving new post")
 // }
-
-pub fn create_post<'a>(_conn: &PgConnection, title: &'a str, body: &'a str) -> Post {
-        use schema::posts;
-
-    let new_post = NewPost {
-        title,
-        body
-    };
-
-    diesel::insert_into(posts::table)
-        .values(new_post)
-        .get_result(_conn)
-        .expect("Error saving new post")
-}
