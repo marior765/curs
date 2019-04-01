@@ -12,12 +12,12 @@ pub fn start() -> &'static str {
     "Hello world!" 
 }
 
-#[get("/post/<id>")]
-pub fn show_post(id: i32) -> Json<String> {
+#[get("/post/<_id>")]
+pub fn show_post(_id: i32) -> Json<String> {
     let conn: PgConnection = db::establish_connection();
     use self::schema::posts::dsl::*;
 
-    let result = posts.find(id)
+    let result = posts.find(_id)
                     .execute(&conn)
                     .expect("Error find post");
 
@@ -31,19 +31,21 @@ pub fn create_post(post: Json<Post>) -> &'static str {
 	let conn: PgConnection  = db::establish_connection();
 	use self::schema::posts::dsl::*;
 
+    // let ex = Post::new(1, "privet".to_string(), "gsgsdg".to_string(), false);
+
 	diesel::insert_into(posts)
-		.values(post.into_inner())
+		.values(&post.into_inner())
 		.execute(&conn)
 		.expect("Error creating post");
 
 	"Post have been successfully created!"
 }
 
-#[post("/delete_post/<id>")]
-pub fn delete_post(id: u8) -> &'static str {
+#[post("/delete_post/<_id>")]
+pub fn delete_post(_id: i32) -> &'static str {
     use self::schema::posts::dsl::*;
     let conn: PgConnection  = db::establish_connection();
-    diesel::delete(posts.find(id)).execute(&conn).is_ok();
+    diesel::delete(posts.find(_id)).execute(&conn).is_ok();
 
     "Post have been successfully deleted!"
 }

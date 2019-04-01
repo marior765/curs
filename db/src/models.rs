@@ -18,6 +18,18 @@ pub struct NewPost {
     pub body: String,
 }
 
+impl Post {
+
+    pub fn new(id: i32, title: String, body: String, published: bool) -> Self {
+        Post {
+            id,
+            title,
+            body,
+            published
+        }
+    }
+}
+
 // impl Post {
 
 //     pub fn show_posts(_n: u8, _conn: &PgConnection) -> Post {

@@ -19,5 +19,4 @@ fn main() {
         routes::create_post,
         routes::delete_post,
     ]).launch();
-
 }
