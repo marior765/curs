@@ -1,8 +1,9 @@
 use super::schema::*;
-use rocket::*;
 use serde::{Serialize, Deserialize};
+use diesel::prelude::*;
+use diesel::pg::PgConnection;
 
-#[derive(Queryable, Insertable, Serialize, Deserialize)]
+#[derive(Queryable, Insertable, Serialize, Deserialize, Debug, AsChangeset)]
 #[table_name="posts"]
 pub struct Post {
     pub id: i32,
@@ -11,44 +12,60 @@ pub struct Post {
     pub published: bool,
 }
 
-#[derive(Queryable, Insertable, FromForm)]
-#[table_name="posts"]
-pub struct NewPost {
-    pub title: String,
-    pub body: String,
-}
+// #[derive(Queryable, Insertable, FromForm)]
+// #[table_name="posts"]
+// pub struct NewPost {
+//     pub title: String,
+//     pub body: String,
+// }
 
 impl Post {
 
-    pub fn new(id: i32, title: String, body: String, published: bool) -> Self {
-        Post {
-            id,
-            title,
-            body,
-            published
-        }
+    pub fn show_single_post(_id: i32, _conn: &PgConnection) {
+        use super::schema::posts::dsl::*;
+        let result = posts.find(_id)
+                        .execute(_conn)
+                        .expect("Error find post");
+
+        println!("Displaying {} posts", result);
+
     }
-}
 
-// impl Post {
+    pub fn show_posts(_n: i32, _conn: &PgConnection) -> Vec<Post> {
+        use super::schema::posts::dsl::*;
 
-//     pub fn show_posts(_n: u8, _conn: &PgConnection) -> Post {
-//         posts.filter(published.eq(true))
-//             .limit(_n)
-//             .load::<Post>(_conn)
-//             .expect("Error loading post")
-//     }
+        let result = posts.filter(published.eq(true))
+            .limit(_n as i64)
+            .load::<Post>(_conn)
+            .expect("Error loading post");
+        
+        result
+    }
 
-//     pub fn create_posts(post: Post, _conn: &PgConnection) -> Post {
-//         diesel::insert_into(posts::table)
-//             .values(&post)
-//             .execute(_conn)
-//             .expect("!");
+    pub fn create_posts(post: Post, _conn: &PgConnection) -> &'static str {
+        diesel::insert_into(posts::table)
+            .values(&post)
+            .execute(_conn)
+            .expect("!");
 
-//         posts::table.order().first(_conn).unwrap()
-//     }
+        "Post has been created"
+    }
+
+    pub fn update_post(_id: i32, post: Post, _conn: &PgConnection) -> &'static str {
+        use super::schema::posts::dsl::*;
+        diesel::update(posts.find(_id)).set(&post).execute(_conn).expect("Error updating post");
+
+        "Post has been updated"
+    }
+
+    pub fn delete_post(_id: i32, _conn: &PgConnection) -> &'static str {
+        use super::schema::posts::dsl::*;
+        diesel::delete(posts.find(_id)).execute(_conn).is_ok();
+
+        "Post has been deleted"
+    }
     
-// }
+}
 
 // #[table_name = "heroes"]
 // #[derive(Serialize, Deserialize, Queryable, Insertable)]
