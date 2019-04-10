@@ -1,0 +1,2 @@
+blacklisted-names = ["toto", "tata", "titi"]
+cognitive-complexity-threshold = 30

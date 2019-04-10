@@ -34,12 +34,10 @@ impl Post {
     pub fn show_posts(_n: i32, _conn: &PgConnection) -> Vec<Post> {
         use super::schema::posts::dsl::*;
 
-        let result = posts.filter(published.eq(true))
-            .limit(_n as i64)
+        posts.filter(published.eq(true))
+            .limit(i64::from(_n))
             .load::<Post>(_conn)
-            .expect("Error loading post");
-        
-        result
+            .expect("Error loading post")
     }
 
     pub fn create_posts(post: Post, _conn: &PgConnection) -> &'static str {

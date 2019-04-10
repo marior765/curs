@@ -1,12 +1,19 @@
 use rocket::response::{Redirect};
+// use rocket::http::Cookies;
 use db::*;
 use self::models::*;
 use diesel::pg::PgConnection;
 use rocket_contrib::json::{Json};
 
+// #[get("/")]
+// fn index(cookies: Cookies) -> Option<String> {
+//     cookies.get("message")
+//         .map(|value| format!("Message: {}", value))
+// }
+
 #[get("/")]
-pub fn start() -> &'static str { 
-    "Hello world!" 
+fn index() -> &'static str {
+    "Hello, Denys!"
 }
 
 #[get("/post/<_id>")]
