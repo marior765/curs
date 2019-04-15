@@ -1,13 +1,9 @@
 language: rust
-# rust:
-#   - stable
-#   - beta
-# before_script:
-#   - rustup component add clippy
 rust: 
   - nightly
 before_scripts:
   - rustup component add clippy --toolchain=nightly || cargo install --git https://github.com/rust-lang/rust-clippy/ --force clippy
+  - rustup component add rustfmt --tollchain=nighlty
   # etc
 script:
   - cargo clippy
@@ -15,6 +11,8 @@ script:
   - cargo clippy -- -D warnings
   # in order to also check tests and non-default crate features, use
   - cargo clippy --all-targets --all-features -- -D warnings
+  - cargo fmt --all -- --check
+  - cargo build
   - cargo test
   # etc.
 

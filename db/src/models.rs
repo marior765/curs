@@ -1,10 +1,10 @@
 use super::schema::*;
-use serde::{Serialize, Deserialize};
-use diesel::prelude::*;
 use diesel::pg::PgConnection;
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Insertable, Serialize, Deserialize, Debug, AsChangeset)]
-#[table_name="posts"]
+#[table_name = "posts"]
 pub struct Post {
     pub id: i32,
     pub title: String,
@@ -20,21 +20,18 @@ pub struct Post {
 // }
 
 impl Post {
-
     pub fn show_single_post(_id: i32, _conn: &PgConnection) {
         use super::schema::posts::dsl::*;
-        let result = posts.find(_id)
-                        .execute(_conn)
-                        .expect("Error find post");
+        let result = posts.find(_id).execute(_conn).expect("Error find post");
 
         println!("Displaying {} posts", result);
-
     }
 
     pub fn show_posts(_n: i32, _conn: &PgConnection) -> Vec<Post> {
         use super::schema::posts::dsl::*;
 
-        posts.filter(published.eq(true))
+        posts
+            .filter(published.eq(true))
             .limit(i64::from(_n))
             .load::<Post>(_conn)
             .expect("Error loading post")
@@ -51,7 +48,10 @@ impl Post {
 
     pub fn update_post(_id: i32, post: Post, _conn: &PgConnection) -> &'static str {
         use super::schema::posts::dsl::*;
-        diesel::update(posts.find(_id)).set(&post).execute(_conn).expect("Error updating post");
+        diesel::update(posts.find(_id))
+            .set(&post)
+            .execute(_conn)
+            .expect("Error updating post");
 
         "Post has been updated"
     }
@@ -62,7 +62,6 @@ impl Post {
 
         "Post has been deleted"
     }
-    
 }
 
 // #[table_name = "heroes"]
@@ -74,7 +73,6 @@ impl Post {
 //     pub hometown: String,
 //     pub age: i32
 // }
-
 
 // impl Hero {
 //     pub fn create(hero: Hero, connection: &MysqlConnection) -> Hero {
